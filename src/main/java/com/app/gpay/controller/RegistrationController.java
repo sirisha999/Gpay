@@ -21,14 +21,10 @@ import com.app.gpay.dto.AccountHistoryResponseDto;
 import com.app.gpay.dto.Customer;
 import com.app.gpay.dto.UserRequestDto;
 import com.app.gpay.service.RegistrationService;
-import com.app.gpay.service.impl.GpayServiceImpl;
 @RestController
 @RequestMapping("/users")
-public class GpayController {
+public class RegistrationController {
 
-	
-	@Autowired
-	GpayServiceImpl gpayServiceImpl;
 	
 	@Autowired
 	RegistrationService registrationService;
@@ -36,27 +32,34 @@ public class GpayController {
 	@Autowired
 	BankingClient bankingClient;
 	
-	Logger logger=LoggerFactory.getLogger(GpayServiceImpl.class);
+	Logger logger=LoggerFactory.getLogger(RegistrationController.class);
 	
 	@PostMapping("/save")
 	public ResponseEntity<String> registration(@RequestBody UserRequestDto employeeReqDto) {
 		Customer customer=bankingClient.getCustomerId(employeeReqDto.getPhoneNumber());
-		if(customer==null) {
-			return new ResponseEntity<String>("user does not have bank account ", HttpStatus.CREATED);
-		}
+		  if(customer==null) { return new
+		  ResponseEntity<String>("user does not have bank account ",
+		  HttpStatus.CREATED); }
 		registrationService.saveUser(employeeReqDto);
-		return new ResponseEntity<String>("Success", HttpStatus.CREATED);
+		return new ResponseEntity<String>("user registered successfully in gpay", HttpStatus.CREATED);
 	}
 	
+	
 	@PostMapping("/phoneNumberBasedTransfer/{userId}/{toPhoneNumber}/{amount}")
-	public ResponseEntity<String> phoneNumberBasedTransfer(@PathVariable Integer userId,@PathVariable Long toPhoneNumber,@PathVariable BigDecimal amount){
-		Long fromPhoneNumber=registrationService.getPhoneNumber(userId);
-		String message=gpayServiceImpl.transfer(fromPhoneNumber, toPhoneNumber, amount);
+	public ResponseEntity<String> phoneNumberBasedTransfer(@PathVariable Integer userId,
+			@PathVariable Long toPhoneNumber, @PathVariable BigDecimal amount) {
+		Long fromPhoneNumber = registrationService.getPhoneNumber(userId);
+		if(fromPhoneNumber.longValue()==0L)
+		{
+			return new ResponseEntity<>("user not registered", HttpStatus.OK);
+		}
+		String message = registrationService.transfer(fromPhoneNumber, toPhoneNumber, amount);
 		return new ResponseEntity<>(message, HttpStatus.OK);
-}
-	@GetMapping("LastTransactions/{id}")
+	}
+	 
+	@GetMapping("LastTransactions/{userId}")
 	public AccountHistoryResponseDto getLast10Transaction(@PathVariable Integer userId) {
-		List<AccountHistoryDto> accountHistoryDtos = gpayServiceImpl.getLast10Transaction(userId);
+		List<AccountHistoryDto> accountHistoryDtos = registrationService.getLast10Transaction(userId);
 		AccountHistoryResponseDto accountHistoryResponseDto = new AccountHistoryResponseDto();
 		accountHistoryResponseDto.setAccountHistoryDos(accountHistoryDtos);
 		accountHistoryResponseDto.setStatusMessage("Last 10 transactions retrived successfully");
