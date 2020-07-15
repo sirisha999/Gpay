@@ -1,25 +1,11 @@
-package com.app.gpay.model;
+package com.app.gpay.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-@Entity
-public class Registration {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer userId;
+public class UserRequestDto {
 	private String userName;
 	private String passWord;
 	private Long phoneNumber;
 	private String email;
 	private Long panNumber;
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
 	public String getUserName() {
 		return userName;
 	}
@@ -50,6 +36,6 @@ public class Registration {
 	public void setPanNumber(Long panNumber) {
 		this.panNumber = panNumber;
 	}
-	
-}
 
+
+}

@@ -1,16 +1,9 @@
-package com.app.gpay.model;
+package com.app.gpay.dto;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-@Entity
-public class AccountHistory {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+public class AccountHistoryDto {
 	private Integer transactionId;
 	 private Long fromPhoneNumber;
 	private BigDecimal transferAmount;
@@ -47,5 +40,5 @@ public class AccountHistory {
 	public void setTransactionTime(Timestamp transactionTime) {
 		this.transactionTime = transactionTime;
 	}
-
 }
+
