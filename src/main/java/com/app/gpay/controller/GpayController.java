@@ -3,6 +3,8 @@ package com.app.gpay.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,8 @@ public class GpayController {
 	@Autowired
 	BankingClient bankingClient;
 	
+	Logger logger=LoggerFactory.getLogger(GpayServiceImpl.class);
+	
 	@PostMapping("/save")
 	public ResponseEntity<String> registration(@RequestBody UserRequestDto employeeReqDto) {
 		Customer customer=bankingClient.getCustomerId(employeeReqDto.getPhoneNumber());
@@ -44,8 +48,8 @@ public class GpayController {
 		return new ResponseEntity<String>("Success", HttpStatus.CREATED);
 	}
 	
-	@PostMapping("/phoneNumberBasedTransfer")
-	public ResponseEntity<String> phoneNumberBasedTransfer(Integer userId,Long toPhoneNumber,BigDecimal amount){
+	@PostMapping("/phoneNumberBasedTransfer/{userId}/{toPhoneNumber}/{amount}")
+	public ResponseEntity<String> phoneNumberBasedTransfer(@PathVariable Integer userId,@PathVariable Long toPhoneNumber,@PathVariable BigDecimal amount){
 		Long fromPhoneNumber=registrationService.getPhoneNumber(userId);
 		String message=gpayServiceImpl.transfer(fromPhoneNumber, toPhoneNumber, amount);
 		return new ResponseEntity<>(message, HttpStatus.OK);

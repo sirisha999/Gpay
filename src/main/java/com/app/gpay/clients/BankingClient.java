@@ -12,8 +12,8 @@ import com.app.gpay.dto.Customer;
 
 @FeignClient(name="http://BANKING/banking/services")
 public interface BankingClient {
-	@PostMapping("/phoneNumberBasedTransfer")
+	@PostMapping("/phoneNumberBasedTransfer/{fromPhoneNumber}/{toPhoneNumber}/{amount}")
 	public ResponseEntity<String> phoneNumberBasedTransfer(@PathVariable Long fromPhoneNumber,@PathVariable Long toPhoneNumber,@PathVariable BigDecimal amount);
-	@GetMapping("/getCustomer/{}")
+	@GetMapping("/getCustomer/{phone}")
 	public Customer getCustomerId(@PathVariable Long phone) ;
 }
