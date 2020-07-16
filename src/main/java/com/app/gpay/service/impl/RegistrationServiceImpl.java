@@ -56,18 +56,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 	public String transfer(Long fromPhoneNumber,Long toPhoneNumber,BigDecimal amount) {
 
 		ResponseEntity<String> message=bankingClient.phoneNumberBasedTransfer(fromPhoneNumber, toPhoneNumber, amount);
-		if(!message.getBody().contains(amount.toString())||!message.getBody().contains("amount trasferred from")){
-			return message.getBody();
-		}
+		
+		
 			AccountHistory fromAccountHistory = new AccountHistory();
 			AccountHistory toAccountHistory = new AccountHistory();
 			fromAccountHistory.setFromPhoneNumber(fromPhoneNumber);
 			fromAccountHistory.setTransferAmount(amount);
+			fromAccountHistory.setToPhoneNumber(toPhoneNumber);
 			fromAccountHistory.setTransactionTime(new Timestamp(System.currentTimeMillis()));
 			accountHistoryRepository.save(fromAccountHistory);
-			toAccountHistory.setToPhoneNumber(toPhoneNumber);
-			toAccountHistory.setTransactionTime(new Timestamp(System.currentTimeMillis()));
-			toAccountHistory.setTransferAmount(amount);
 			accountHistoryRepository.save(toAccountHistory);
 			return amount+" trasferred from " + fromPhoneNumber + " to "
 					+ toPhoneNumber;
